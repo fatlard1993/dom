@@ -183,6 +183,11 @@ var dom = {
 	appendTo: function(elem, parentElem){
 		parentElem.appendChild(elem);
 	},
+	prependTo: function(elem, parentElem){
+		if(parentElem.firstChild) parentElem.insertBefore(elem, parentElem.firstChild);
+
+		else parentElem.appendChild(elem);
+	},
 	prependChild: function(elem, child){
 		if(elem.firstChild) elem.insertBefore(child, elem.firstChild);
 

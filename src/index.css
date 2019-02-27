@@ -22,4 +22,23 @@ body {
 			transform: scale(0.2) translateX(1000px);
 		}
 	}
+
+	.clear {
+		content: "";
+		display: block;
+		clear: both;
+	}
+
+	.disappear {
+		display: none !important;
+		will-change: auto !important;
+	}
+}
+
+div#scrollbarDiv {
+	position: absolute;
+	top: -999;
+	width: 100px;
+	height: 100px;
+	overflow: scroll;
 }

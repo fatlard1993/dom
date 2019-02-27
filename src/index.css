@@ -1,0 +1,25 @@
+body {
+	.hideable {
+		transition: opacity .3s;
+		will-change: opacity;
+	}
+	.hide {
+		opacity: 0 !important;
+	}
+
+	.discardable {
+		transition: transform .4s, opacity .3s;
+		will-change: transform, opacity;
+	}
+	.discard {
+		opacity: 0 !important;
+		transform: scale(0.2);
+
+		&.left {
+			transform: scale(0.2) translateX(-1000px);
+		}
+		&.right {
+			transform: scale(0.2) translateX(1000px);
+		}
+	}
+}

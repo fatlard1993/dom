@@ -90,7 +90,9 @@ var dom = {
 
 			if(evt.target.nodeName === 'SELECT') return;
 
-			dom.interact.triggerEvent('keyDown', evt, keyPressed);
+			evt.keyPressed = keyPressed;
+
+			dom.interact.triggerEvent('keyDown', evt);
 		},
 		keyUp: function keyUp(evt){
 			var keyPressed = dom.interact.translateKeyCode(evt.which || evt.keyCode);
@@ -101,7 +103,9 @@ var dom = {
 
 			dom.validate(evt.target);
 
-			dom.interact.triggerEvent('keyUp', evt, keyPressed);
+			evt.keyPressed = keyPressed;
+
+			dom.interact.triggerEvent('keyUp', evt);
 		},
 		change: function change(evt){
 			dom.validate(evt.target);
@@ -152,15 +156,15 @@ var dom = {
 
 		if(settingsObj){
 			var settingsNames = Object.keys(settingsObj), settingsCount = settingsNames.length;
-      var settingName;
+			var settingName;
 			var settingValue;
 
 			for(var x = 0; x < settingsCount; ++x){
-        settingName = settingsNames[x];
+				settingName = settingsNames[x];
 				settingValue = settingsObj[settingName];
 
-        if(typeof this[settingName] === 'function'){
-          if(Array.isArray(settingValue)) this[settingName].apply(this, [elem].concat(settingValue));
+				if(typeof this[settingName] === 'function'){
+					if(Array.isArray(settingValue)) this[settingName].apply(this, [elem].concat(settingValue));
 
 					else this[settingName](elem, settingValue);
 				}

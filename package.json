@@ -26,7 +26,7 @@
 		"eslint": "^5.15.3"
 	},
 	"dependencies": {
-		"js-util": "github.com:fatlard1993/js-util#2.x.x",
+		"js-util": "github:fatlard1993/js-util#2.x.x",
 		"log": "github:fatlard1993/log#2.x.x"
 	}
 }

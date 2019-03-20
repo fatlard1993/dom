@@ -21,12 +21,12 @@
 		"extends": "rules"
 	},
 	"devDependencies": {
-		"eslint-config-rules": "github:fatlard1993/eslint-config-rules",
+		"eslint-config-rules": "github:fatlard1993/eslint-config-rules#2.x.x",
 		"babel-eslint": "^10.0.1",
 		"eslint": "^5.15.3"
 	},
 	"dependencies": {
-		"js-util": "github:fatlard1993/js-util#semver:>=2.0.0 <3.0.0",
-		"log": "github:fatlard1993/log#semver:>=2.0.0 <3.0.0"
+		"js-util": "github.com:fatlard1993/js-util#2.x.x",
+		"log": "github:fatlard1993/log#2.x.x"
 	}
 }

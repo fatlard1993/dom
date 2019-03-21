@@ -120,9 +120,6 @@ var dom = {
 			dom.interact.triggerEvent('contextMenu', evt);
 		}
 	},
-	changeLocation: function(newLocation){
-		window.location = window.location.protocol +'//'+ window.location.hostname +':'+ (window.location.port || 80) + newLocation;
-	},
 	localStorage: (function initLocalStorage(){
 		var uid = new Date(), result;
 
@@ -202,15 +199,15 @@ var dom = {
 	},
 	isNodeList: function(nodes){
 		var nodeCount = nodes.length;
+		var nodesString = Object.prototype.toString.call(nodes);
+		var stringRegex = /^\[object (HTMLCollection|NodeList|Object)\]$/;
 
-		return typeof nodes === 'object' && (typeof nodeCount === 'number') &&
-			/^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(nodes)) &&
-			(nodeCount === 0 || (typeof nodes[0] === 'object' && nodes[0].nodeType > 0));
+		return typeof nodes === 'object' && typeof nodeCount === 'number' && stringRegex.test(nodesString) && (nodeCount === 0 || (typeof nodes[0] === 'object' && nodes[0].nodeType > 0));
 	},
-	findAncestor: function(el, class_id){
-		while((el = el.parentElement) && (class_id[0] === '#' ? '#'+ el.id !== class_id : !el.className.includes(class_id)));
+	findAncestor: function(elem, class_id){
+		while((elem = elem.parentElement) && (class_id[0] === '#' ? '#'+ elem.id !== class_id : !elem.className.includes(class_id)));
 
-		return el;
+		return elem;
 	},
 	empty: function(elem){
 		if(!elem || !elem.lastChild) return;
@@ -236,6 +233,13 @@ var dom = {
 
 		else if(elem_s && elem_s.parentElement) elem_s.parentElement.removeChild(elem_s);
 	},
+	show: function(elem, className, cb){
+		dom.animation.add('write', function show_write(){
+			elem.className = className || elem.className.replace(/\s?(disappear|discard)/g, '');
+
+			if(cb) cb();
+		});
+	},
 	hide: function(elem, cb){
 		dom.animation.add('write', function hide_write(){
 			if(!elem.className.includes('disappear')) elem.className += ' disappear';
@@ -250,13 +254,6 @@ var dom = {
 			setTimeout(function discard_TO(){
 				dom.hide(elem, cb);
 			}, 200);
-		});
-	},
-	show: function(elem, className, cb){
-		dom.animation.add('write', function show_write(){
-			elem.className = className || elem.className.replace(/\s?(disappear|discard)/g, '');
-
-			if(cb) cb();
 		});
 	},
 	setTransform: function(elem, value){
@@ -278,17 +275,7 @@ var dom = {
 	getScrollbarSize: function(){
 		if(dom.scrollbarSize) return dom.scrollbarSize;
 
-		var scrollbarDiv = dom.createElem('div', { id: 'scrollbarDiv' });
-
-		// scrollbarDiv.setAttribute('style',
-		//	 'position: absolute;' +
-		//	 'top: -999;' +
-		//	 'width: 100px;' +
-		//	 'height: 100px;' +
-		//	 'overflow: scroll;'
-		// );
-
-		document.body.appendChild(scrollbarDiv);
+		var scrollbarDiv = dom.createElem('div', { id: 'scrollbarDiv', appendTo: document.body });
 
 		dom.scrollbarSize = scrollbarDiv.offsetWidth - scrollbarDiv.clientWidth;
 
@@ -347,11 +334,7 @@ var dom = {
 			}
 		}
 
-		if(!showingWarnings){
-			var defaultWarning = dom.createElem('p', { className: 'validationWarning', textContent: 'There are fields which require your attention!' });
-
-			dom.prependChild(parentElement, defaultWarning);
-		}
+		if(!showingWarnings) dom.createElem('p', { className: 'validationWarning', textContent: 'There are fields which require your attention!', prependTo: parentElement });
 
 		return showingWarnings;
 	},
@@ -364,6 +347,9 @@ var dom = {
 		return orientation;
 	},
 	location: {
+		change: function(newLocation){
+			window.location = `${window.location.protocol}//${window.location.hostname}:${(window.location.port || 80)}${newLocation}`;
+		},
 		hash: {
 			get: function(){
 				return location.hash.slice(1);
@@ -477,11 +463,11 @@ var dom = {
 			try{
 				if(dom.animation.read_tasks.length){
 					//Log()('animation', 'running reads', dom.animation.read_tasks.length);
-					dom.funcRunner(dom.animation.read_tasks, 1);
+					util.run(dom.animation.read_tasks, 1);
 				}
 				if(dom.animation.write_tasks.length){
 					//Log()('animation', 'running writes', dom.animation.write_tasks.length);
-					dom.funcRunner(dom.animation.write_tasks, 1);
+					util.run(dom.animation.write_tasks, 1);
 				}
 			}
 
@@ -505,7 +491,7 @@ var dom = {
 		init: function(initialMaintenance){
 			if(initialMaintenance) dom.maintenance.functions = dom.maintenance.functions.concat(initialMaintenance);
 
-			dom.maintenance.runner = dom.funcRunner.bind(null, dom.maintenance.functions);
+			dom.maintenance.runner = util.run.bind(null, dom.maintenance.functions);
 
 			window.addEventListener('resize', function windowResize(){
 				if(dom.maintenance.resizeTO){
@@ -526,12 +512,5 @@ var dom = {
 				dom.animation.add('write', dom.maintenance.runner);
 			});
 		}
-	},
-	funcRunner: function(arr, destructive){
-		if(!destructive) arr = arr.slice(0);
-
-		var task;
-
-		while((task = arr.shift())) task();
 	}
 };

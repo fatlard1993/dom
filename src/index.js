@@ -346,6 +346,35 @@ var dom = {
 
 		return orientation;
 	},
+	mobileDetection: function(){
+		var lastTouchTime = 0;
+
+		function disableMobile(){
+			updateLastTouchTime();
+
+			// filter emulated events coming from touch events
+			if(new Date() - lastTouchTime < 500 || !dom.isMobile) return;
+
+			document.body.classList.remove('mobile');
+
+			dom.isMobile = false;
+		}
+
+		function enableMobile(){
+			if(dom.isMobile) return;
+
+			document.body.classList.add('mobile');
+
+			dom.isMobile = true;
+		}
+
+		function updateLastTouchTime(){ lastTouchTime = new Date(); }
+
+		document.addEventListener('touchstart', enableMobile, true);
+		document.addEventListener('mousemove', disableMobile, true);
+
+		disableMobile();
+	},
 	location: {
 		change: function(newLocation){
 			window.location = `${window.location.protocol}//${window.location.hostname}:${(window.location.port || 80)}${newLocation}`;

@@ -61,14 +61,14 @@ var dom = {
 		pointerDown: function pointerDown(evt){
 			dom.interact.activity++;
 
-			if(evt.which === 2 || typeof evt.target.className !== 'string') return;
+			if(typeof evt.target.className !== 'string') return;
 
 			dom.interact.pointerTarget = evt.target;
 
 			dom.interact.triggerEvent('pointerDown', evt);
 		},
 		pointerUp: function pointerUp(evt){
-			if(evt.which === 2 || evt.which === 3 || typeof evt.target.className !== 'string' || !evt.cancelable) return;
+			if(typeof evt.target.className !== 'string' || !evt.cancelable) return;
 
 			if(evt.target !== dom.interact.pointerTarget) return (dom.interact.pointerTarget = null);
 

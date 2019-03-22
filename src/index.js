@@ -346,34 +346,26 @@ var dom = {
 
 		return orientation;
 	},
-	mobileDetection: function(){
-		var lastTouchTime = 0;
-
-		function disableMobile(){
-			updateLastTouchTime();
-
-			// filter emulated events coming from touch events
-			if(new Date() - lastTouchTime < 500 || !dom.isMobile) return;
-
-			document.body.classList.remove('mobile');
-
-			dom.isMobile = false;
-		}
-
-		function enableMobile(){
+	isMobile: false,
+	mobile: {
+		detect: function(){
+			document.addEventListener('touchstart', dom.mobile.enable, true);
+			document.addEventListener('mousemove', dom.mobile.disable, true);
+		},
+		enable: function(){
 			if(dom.isMobile) return;
 
 			document.body.classList.add('mobile');
 
 			dom.isMobile = true;
-		}
+		},
+		disable: function(){
+			if(dom.isMobile === false) return;
 
-		function updateLastTouchTime(){ lastTouchTime = new Date(); }
+			document.body.classList.remove('mobile');
 
-		document.addEventListener('touchstart', enableMobile, true);
-		document.addEventListener('mousemove', disableMobile, true);
-
-		disableMobile();
+			dom.isMobile = false;
+		},
 	},
 	location: {
 		change: function(newLocation){

@@ -209,6 +209,10 @@ var dom = {
 
 		return elem;
 	},
+	elements: {},
+	getElemById: function(id){
+		return dom.elements[id] || document.getElementById(id);
+	},
 	empty: function(elem){
 		if(!elem || !elem.lastChild) return;
 

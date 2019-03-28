@@ -23,7 +23,7 @@ var dom = {
 
 		setTimeout(function acceptKeyPresses_TO(){ dom.interact.acceptKeyPresses = true; }, 1000);
 
-		logHelp.DBG = dom.storage.get('DBG');
+		logHelp.DBG = parseInt(dom.storage.get('DBG'));
 	},
 	onLoaded: function(){
 		if(dom.loaded) return;

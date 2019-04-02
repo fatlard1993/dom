@@ -1,6 +1,6 @@
 {
 	"name": "dom",
-	"version": "2.3.2",
+	"version": "2.3.3",
 	"description": "A js library for working with the dom",
 	"main": "src/index.js",
 	"mainCss": "src/index.css",

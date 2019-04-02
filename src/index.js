@@ -237,27 +237,29 @@ var dom = {
 
 		else if(elem_s && elem_s.parentElement) elem_s.parentElement.removeChild(elem_s);
 	},
-	show: function(elem, className, cb){
+	show: function(elem, className, done){
 		dom.animation.add('write', function show_write(){
-			elem.className = className || elem.className.replace(/\s?(disappear|discard)/g, '');
-
-			if(cb) cb();
-		});
-	},
-	hide: function(elem, cb){
-		dom.animation.add('write', function hide_write(){
-			if(!elem.className.includes('disappear')) elem.className += ' disappear';
-
-			if(cb) cb();
-		});
-	},
-	discard: function(elem, className, cb){
-		dom.animation.add('write', function discard_write(){
-			elem.className += (elem.className.includes('discard') ? ' ' : ' discard ') + (className || '');
+			elem.classList.remove('disappear');
 
 			setTimeout(function discard_TO(){
-				dom.hide(elem, cb);
+				elem.classList.remove('discard');
+
+				if(done) done();
 			}, 200);
+		});
+	},
+	hide: function(elem, done){
+		dom.animation.add('write', function hide_write(){
+			elem.classList.add('disappear');
+
+			if(done) done();
+		});
+	},
+	discard: function(elem, className, done){
+		dom.animation.add('write', function discard_write(){
+			elem.classList.add('discard');
+
+			setTimeout(function discard_TO(){ dom.hide(elem, done); }, 200);
 		});
 	},
 	setTransform: function(elem, value){

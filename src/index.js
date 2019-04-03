@@ -80,8 +80,6 @@ var dom = {
 				dom.interact.pointerTarget = dom.interact.pointerTarget || {};
 
 				dom.interact.pointerTarget[evt.targetTouches[0].identifier] = evt.target;
-
-				log()(`down: `, evt.targetTouches[0].identifier, evt.target);
 			}
 
 			else dom.interact.pointerTarget = evt.target;
@@ -92,8 +90,6 @@ var dom = {
 			if(evt.sourceCapabilities && !evt.touches && evt.sourceCapabilities.firesTouchEvents) return;
 
 			if(typeof evt.target.className !== 'string') return;
-
-			if(evt.touches) log()(`up: `, evt.changedTouches[0].identifier, evt.target);
 
 			if(evt.target !== (evt.touches ? dom.interact.pointerTarget[evt.changedTouches[0].identifier] : dom.interact.pointerTarget)) return dom.interact.clearPointerTarget();
 

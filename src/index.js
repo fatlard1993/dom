@@ -54,23 +54,48 @@ var dom = {
 
 			if(!dom.interact[eventName]) return;
 
+			evt.clearPointerTarget = dom.interact.clearPointerTarget.bind(evt);
+
 			for(var x = 0, count = dom.interact[eventName].length; x < count; ++x){
 				dom.interact[eventName][x].call(dom.interact, evt);
 			}
 		},
+		clearPointerTarget: function(){
+			if(this.touches){
+				dom.interact.pointerTarget = dom.interact.pointerTarget || {};
+
+				delete dom.interact.pointerTarget[(this.targetTouches[0] || this.changedTouches[0]).identifier];
+			}
+
+			else delete dom.interact.pointerTarget;
+		},
 		pointerDown: function pointerDown(evt){
+			if(evt.sourceCapabilities && !evt.touches && evt.sourceCapabilities.firesTouchEvents) return;
+
 			dom.interact.activity++;
 
 			if(typeof evt.target.className !== 'string') return;
 
-			dom.interact.pointerTarget = evt.target;
+			if(evt.touches){
+				dom.interact.pointerTarget = dom.interact.pointerTarget || {};
+
+				dom.interact.pointerTarget[evt.targetTouches[0].identifier] = evt.target;
+
+				log()(`down: `, evt.targetTouches[0].identifier, evt.target);
+			}
+
+			else dom.interact.pointerTarget = evt.target;
 
 			dom.interact.triggerEvent('pointerDown', evt);
 		},
 		pointerUp: function pointerUp(evt){
-			if(typeof evt.target.className !== 'string' || !evt.cancelable) return;
+			if(evt.sourceCapabilities && !evt.touches && evt.sourceCapabilities.firesTouchEvents) return;
 
-			if(evt.target !== dom.interact.pointerTarget) return (dom.interact.pointerTarget = null);
+			if(typeof evt.target.className !== 'string') return;
+
+			if(evt.touches) log()(`up: `, evt.changedTouches[0].identifier, evt.target);
+
+			if(evt.target !== (evt.touches ? dom.interact.pointerTarget[evt.changedTouches[0].identifier] : dom.interact.pointerTarget)) return dom.interact.clearPointerTarget();
 
 			dom.interact.triggerEvent('pointerUp', evt);
 		},

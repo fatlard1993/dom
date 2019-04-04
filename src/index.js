@@ -1,4 +1,4 @@
-// includes js-util log
+// includes js-util log pep
 // babel
 /* global util log logHelp */
 
@@ -8,11 +8,8 @@ var dom = {
 
 		document.addEventListener('DOMContentLoaded', dom.onLoaded);
 
-		document.addEventListener('mousedown', dom.interact.pointerDown);
-		document.addEventListener('touchstart', dom.interact.pointerDown);
-
-		document.addEventListener('click', dom.interact.pointerUp);
-		document.addEventListener('touchend', dom.interact.pointerUp);
+		document.addEventListener('pointerdown', dom.interact.pointerDown);
+		document.addEventListener('pointerup', dom.interact.pointerUp);
 
 		document.addEventListener('keydown', dom.interact.keyDown);
 		document.addEventListener('keyup', dom.interact.keyUp);
@@ -61,37 +58,17 @@ var dom = {
 			}
 		},
 		clearPointerTarget: function(){
-			if(this.touches){
-				dom.interact.pointerTarget = dom.interact.pointerTarget || {};
-
-				delete dom.interact.pointerTarget[(this.targetTouches[0] || this.changedTouches[0]).identifier];
-			}
-
-			else delete dom.interact.pointerTarget;
+			return;
 		},
 		pointerDown: function pointerDown(evt){
-			if(evt.sourceCapabilities && !evt.touches && evt.sourceCapabilities.firesTouchEvents) return;
-
-			dom.interact.activity++;
+			++dom.interact.activity;
 
 			if(typeof evt.target.className !== 'string') return;
-
-			if(evt.touches){
-				dom.interact.pointerTarget = dom.interact.pointerTarget || {};
-
-				dom.interact.pointerTarget[evt.targetTouches[0].identifier] = evt.target;
-			}
-
-			else dom.interact.pointerTarget = evt.target;
 
 			dom.interact.triggerEvent('pointerDown', evt);
 		},
 		pointerUp: function pointerUp(evt){
-			if(evt.sourceCapabilities && !evt.touches && evt.sourceCapabilities.firesTouchEvents) return;
-
 			if(typeof evt.target.className !== 'string') return;
-
-			if(evt.target !== (evt.touches ? dom.interact.pointerTarget[evt.changedTouches[0].identifier] : dom.interact.pointerTarget)) return dom.interact.clearPointerTarget();
 
 			dom.interact.triggerEvent('pointerUp', evt);
 		},

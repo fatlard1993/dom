@@ -241,6 +241,7 @@ var dom = {
 
 			setTimeout(function discard_TO(){
 				elem.classList.remove('discard');
+				if(className) elem.classList.add(className);
 
 				if(done) done();
 			}, 200);

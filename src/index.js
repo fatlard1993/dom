@@ -250,6 +250,13 @@ var dom = {
 			if(done) setTimeout(done, 100);
 		});
 	},
+	disappear: function(elem, done){
+		dom.animation.add('write', function disappear_write(){
+			elem.classList.add('disappear');
+
+			if(done) done();
+		});
+	},
 	discard: function(elem, className, done){
 		dom.animation.add('write', function discard_write(){
 			elem.classList.add('discard');

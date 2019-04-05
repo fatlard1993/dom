@@ -237,21 +237,17 @@ var dom = {
 	},
 	show: function(elem, className, done){
 		dom.animation.add('write', function show_write(){
-			elem.classList.remove('disappear');
+			elem.classList.remove('hide', 'disappear', 'discard');
+			if(className) elem.classList.add(className);
 
-			setTimeout(function discard_TO(){
-				elem.classList.remove('discard');
-				if(className) elem.classList.add(className);
-
-				if(done) done();
-			}, 200);
+			if(done) setTimeout(done, 100);
 		});
 	},
 	hide: function(elem, done){
 		dom.animation.add('write', function hide_write(){
-			elem.classList.add('disappear');
+			elem.classList.add('hide');
 
-			if(done) done();
+			if(done) setTimeout(done, 100);
 		});
 	},
 	discard: function(elem, className, done){
@@ -259,7 +255,7 @@ var dom = {
 			elem.classList.add('discard');
 			if(className) elem.classList.add(className);
 
-			setTimeout(function discard_TO(){ dom.hide(elem, done); }, 200);
+			if(done) setTimeout(done, 100);
 		});
 	},
 	setTransform: function(elem, value){

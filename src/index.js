@@ -256,7 +256,8 @@ var dom = {
 	},
 	discard: function(elem, className, done){
 		dom.animation.add('write', function discard_write(){
-			elem.classList.add('discard', className);
+			elem.classList.add('discard');
+			if(className) elem.classList.add(className);
 
 			setTimeout(function discard_TO(){ dom.hide(elem, done); }, 200);
 		});

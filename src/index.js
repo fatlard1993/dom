@@ -33,7 +33,6 @@ var dom = {
 		activity: 0,
 		pressedKeys: {},
 		acceptKeyPresses: false,
-		pointerTarget: null,
 		on: function(eventName, func){
 			const eventArrName = `on_${eventName}`;
 
@@ -51,14 +50,9 @@ var dom = {
 
 			if(!dom.interact[eventName]) return;
 
-			evt.clearPointerTarget = dom.interact.clearPointerTarget.bind(evt);
-
 			for(var x = 0, count = dom.interact[eventName].length; x < count; ++x){
 				dom.interact[eventName][x].call(dom.interact, evt);
 			}
-		},
-		clearPointerTarget: function(){
-			return;
 		},
 		pointerDown: function pointerDown(evt){
 			++dom.interact.activity;

@@ -232,7 +232,7 @@ var dom = {
 	show: function(elem, className, done){
 		dom.animation.add('write', function show_write(){
 			elem.classList.remove('hide', 'disappear', 'discard');
-			if(className) elem.classList.add(className);
+			if(className) elem.classList.add(className.split(' '));
 
 			if(done) setTimeout(done, 100);
 		});
@@ -254,7 +254,7 @@ var dom = {
 	discard: function(elem, className, done){
 		dom.animation.add('write', function discard_write(){
 			elem.classList.add('discard');
-			if(className) elem.classList.add(className);
+			if(className) elem.classList.add(className.split(' '));
 
 			if(done) setTimeout(done, 100);
 		});

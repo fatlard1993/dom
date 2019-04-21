@@ -351,9 +351,10 @@ var dom = {
 	},
 	isMobile: false,
 	mobile: {
-		detect: function(){
-			document.addEventListener('touchstart', dom.mobile.enable, true);
-			document.addEventListener('mousemove', dom.mobile.disable, true);
+		detect: function(evt){
+			if(evt) return dom.mobile[(evt.pointerType === 'touch' ? 'en' : 'dis') +'able']();
+
+			dom.interact.on('pointerDown', dom.mobile.detect);
 		},
 		enable: function(){
 			if(dom.isMobile) return;

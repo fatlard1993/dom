@@ -289,7 +289,7 @@ var dom = {
 	validate: function(elem, force){
 		if(!elem) return;
 
-		if(force || elem.validation) elem.className = elem.className.replace(/\s?validated|\s?invalid/g, '');
+		if(force || elem.validation) elem.classList.remove('validated', 'invalid');
 
 		var valid, validationWarning = '';
 
@@ -311,7 +311,9 @@ var dom = {
 			}
 		}
 
-		elem.className += ' '+ valid;
+		elem.classList.add(valid);
+
+		if(valid === 'validated') dom.showValidationWarnings(elem.parentElement);
 
 		return validationWarning;
 	},
@@ -319,13 +321,15 @@ var dom = {
 		return new RegExp(regex).test(string) ? 'validated' : 'invalid';
 	},
 	showValidationWarnings: function(parentElement){
+		if(!parentElement) return;
+
 		var invalidElements = parentElement.getElementsByClassName('invalid');
 
-		if(!invalidElements.length) return;
+		dom.remove(parentElement.getElementsByClassName('validationWarning'));
+
+		if(!invalidElements || !invalidElements.length) return;
 
 		var showingWarnings = false;
-
-		dom.remove(parentElement.getElementsByClassName('validationWarning'));
 
 		for(var x = 0; x < invalidElements.length; ++x){
 			var validationWarning = dom.validate(invalidElements[x]);

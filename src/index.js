@@ -289,6 +289,14 @@ var dom = {
 	validate: function(elem, force){
 		if(!elem) return;
 
+		if(elem instanceof Array){
+			for(var x = 0, count = elem.length; x < count; ++x){
+				dom.validate(elem[x], force);
+			}
+
+			return;
+		}
+
 		if(force || elem.validation) elem.classList.remove('validated', 'invalid');
 
 		var valid, validationWarning = '';

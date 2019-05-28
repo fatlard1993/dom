@@ -126,7 +126,7 @@ var dom = {
 		}
 
 		catch(err){
-			log.error(err);
+			log.error()('[dom]', err);
 		}
 	}()),
 	storage: {
@@ -511,7 +511,7 @@ var dom = {
 			}
 
 			catch(err){
-				log.error('dom.animation.runner encountered an error!', err);
+				log.error('[dom] Animation runner encountered an error!', err);
 			}
 
 			dom.animation.scheduled = false;

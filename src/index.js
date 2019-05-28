@@ -291,10 +291,10 @@ var dom = {
 	validate: function(elem, force){
 		if(!elem) return;
 
+		var x, count;
+
 		if(elem instanceof Array){
-			for(var x = 0, count = elem.length; x < count; ++x){
-				dom.validate(elem[x], force);
-			}
+			for(x = 0, count = elem.length; x < count; ++x) dom.validate(elem[x], force);
 
 			return;
 		}
@@ -307,7 +307,7 @@ var dom = {
 
 		else if(elem.validation){
 			if(elem.validation instanceof Array){
-				for(var x = 0; x < elem.validation.length; ++x){
+				for(x = 0, count = elem.validation.length; x < count; ++x){
 					if(valid !== 'invalid') valid = dom.checkValid(elem.value, elem.validation[x]);
 
 					if(elem.validationWarning[x] && valid === 'invalid') validationWarning += (validationWarning.length ? '\n' : '') + elem.validationWarning[x];

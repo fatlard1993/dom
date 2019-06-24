@@ -78,7 +78,7 @@ var dom = {
 			else if(!dom.interact.acceptKeyPresses) return (dom.interact.pressedKeys[keyPressed] = 2); // keypress while not accepting
 			else dom.interact.pressedKeys[keyPressed] = 1; // valid keypress
 
-			dom.interact.activity++;
+			++dom.interact.activity;
 
 			if(evt.target.nodeName === 'SELECT') return;
 

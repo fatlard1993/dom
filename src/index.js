@@ -288,6 +288,15 @@ var dom = {
 
 		return dom.scrollbarSize;
 	},
+	getPixelDensity: function(){
+		var reqTime = performance.now();
+
+		if(dom.pixelDensity && dom.lastPixelDensityRefresh && reqTime - dom.lastPixelDensityRefresh < 5e3) return dom.pixelDensity;
+
+		dom.lastPixelDensityRefresh = reqTime;
+
+		return (dom.pixelDensity = window.devicePixelRatio || 1);
+	},
 	validate: function(elem, force){
 		if(!elem) return;
 

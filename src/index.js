@@ -3,6 +3,8 @@
 /* global util log logHelp */
 
 var dom = {
+	isIOS: navigator.platform && /iP(hone|ad)/.test(navigator.platform),
+	isSafari: navigator.vendor === 'Apple Computer, Inc.' && !navigator.userAgent.match('CriOS'),
 	onLoad: function(func){
 		dom.onLoader = func;
 

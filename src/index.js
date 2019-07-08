@@ -8,7 +8,9 @@ var dom = {
 	onLoad: function(func){
 		dom.onLoader = func;
 
-		document.addEventListener('DOMContentLoaded', dom.onLoaded);
+		if(document.readyState !== 'loading') dom.onLoaded();
+
+		else document.addEventListener('DOMContentLoaded', dom.onLoaded);
 
 		document.addEventListener('pointerdown', dom.interact.pointerDown);
 		document.addEventListener('pointerup', dom.interact.pointerUp);

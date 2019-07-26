@@ -198,6 +198,9 @@ var dom = {
 	basicTextElem: function(options){
 		return Object.assign({ type: 'text', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off' }, options);
 	},
+	style: function(elem, styleObj){
+		for(var x = 0, keys = Object.keys(styleObj), count = keys.length; x < count; ++x) elem.style[keys[x]] = styleObj[keys[x]];
+	},
 	appendChildren: function(){
 		var elem = Array.prototype.shift.apply(arguments);
 

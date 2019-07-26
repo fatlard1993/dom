@@ -407,9 +407,24 @@ var dom = {
 	isMobile: false,
 	mobile: {
 		detect: function(evt){
-			if(evt) return dom.mobile[(evt.pointerType === 'touch' ? 'en' : 'dis') +'able']();
+			if(!evt){
+				if(!dom.mobile.detectionEnabled){
+					dom.mobile.detectionEnabled = true;
 
-			dom.interact.on('pointerDown', dom.mobile.detect);
+					dom.interact.on('mouseDown', dom.mobile.detect);
+					dom.interact.on('touchDown', dom.mobile.detect);
+				}
+
+				return;
+			}
+
+			var isTouch = evt.pointerType === 'touch';
+
+			if(!isTouch && (dom.mobile.lastTouchTime && performance.now() - dom.mobile.lastTouchTime < 350)) return log(4)('[dom] Block touch to mouse emulation');
+
+			else if(isTouch) dom.mobile.lastTouchTime = performance.now();
+
+			dom.mobile[(isTouch ? 'en' : 'dis') +'able']();
 		},
 		enable: function(){
 			if(dom.isMobile) return;

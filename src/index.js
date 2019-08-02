@@ -2,6 +2,8 @@
 // babel
 /* global util log logHelp */
 
+navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
 var dom = {
 	isIOS: navigator.platform && /iP(hone|ad)/.test(navigator.platform),
 	isSafari: navigator.vendor === 'Apple Computer, Inc.' && !navigator.userAgent.match('CriOS'),
@@ -16,20 +18,11 @@ var dom = {
 
 		dom.interact.keyMap = [n, n, n, 'CANCEL', n, n, 'HELP', n, 'BACK_SPACE', 'TAB', n, n, 'CLEAR', 'ENTER', 'ENTER_SPECIAL', n, 'SHIFT', 'CONTROL', 'ALT', 'PAUSE', 'CAPS_LOCK', 'KANA', 'EISU', 'JUNJA', 'FINAL', 'HANJA', n, 'ESCAPE', 'CONVERT', 'NONCONVERT', 'ACCEPT', 'MODECHANGE', 'SPACE', 'PAGE_UP', 'PAGE_DOWN', 'END', 'HOME', 'LEFT', 'UP', 'RIGHT', 'DOWN', 'SELECT', 'PRINT', 'EXECUTE', 'PRINTSCREEN', 'INSERT', 'DELETE', n, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'COLON', 'SEMICOLON', 'LESS_THAN', 'EQUALS', 'GREATER_THAN', 'QUESTION_MARK', 'AT', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'OS_KEY', n, 'CONTEXT_MENU', n, 'SLEEP', 'NUMPAD0', 'NUMPAD1', 'NUMPAD2', 'NUMPAD3', 'NUMPAD4', 'NUMPAD5', 'NUMPAD6', 'NUMPAD7', 'NUMPAD8', 'NUMPAD9', 'MULTIPLY', 'ADD', 'SEPARATOR', 'SUBTRACT', 'DECIMAL', 'DIVIDE', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'F13', 'F14', 'F15', 'F16', 'F17', 'F18', 'F19', 'F20', 'F21', 'F22', 'F23', 'F24', n, n, n, n, n, n, n, n, 'NUM_LOCK', 'SCROLL_LOCK', 'WIN_OEM_FJ_JISHO', 'WIN_OEM_FJ_MASSHOU', 'WIN_OEM_FJ_TOUROKU', 'WIN_OEM_FJ_LOYA', 'WIN_OEM_FJ_ROYA', n, n, n, n, n, n, n, n, n, 'CIRCUMFLEX', 'EXCLAMATION', 'DOUBLE_QUOTE', 'HASH', 'DOLLAR', 'PERCENT', 'AMPERSAND', 'UNDERSCORE', 'OPEN_PAREN', 'CLOSE_PAREN', 'ASTERISK', 'PLUS', 'PIPE', 'HYPHEN_MINUS', 'OPEN_CURLY_BRACKET', 'CLOSE_CURLY_BRACKET', 'TILDE', n, n, n, n, 'VOLUME_MUTE', 'VOLUME_DOWN', 'VOLUME_UP', n, n, 'SEMICOLON', 'EQUALS', 'COMMA', 'MINUS', 'PERIOD', 'SLASH', 'BACK_QUOTE', n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 'OPEN_BRACKET', 'BACK_SLASH', 'CLOSE_BRACKET', 'QUOTE', n, 'META', 'ALTGR', n, 'WIN_ICO_HELP', 'WIN_ICO_00', n, 'WIN_ICO_CLEAR', n, n, 'WIN_OEM_RESET', 'WIN_OEM_JUMP', 'WIN_OEM_PA1', 'WIN_OEM_PA2', 'WIN_OEM_PA3', 'WIN_OEM_WSCTRL', 'WIN_OEM_CUSEL', 'WIN_OEM_ATTN', 'WIN_OEM_FINISH', 'WIN_OEM_COPY', 'WIN_OEM_AUTO', 'WIN_OEM_ENLW', 'WIN_OEM_BACKTAB', 'ATTN', 'CRSEL', 'EXSEL', 'EREOF', 'PLAY', 'ZOOM', n, 'PA1', 'WIN_OEM_CLEAR', n];
 
-
-		var touchDownFunc = dom.pointerEventPolyfill.bind(dom.interact.pointerDown);
-		var mouseDownFunc = dom.pointerEventPolyfill.bind(dom.interact.pointerDown);
-		var touchUpFunc = dom.pointerEventPolyfill.bind(dom.interact.pointerUp);
-		var mouseUpFunc = dom.pointerEventPolyfill.bind(dom.interact.pointerUp);
-
-		touchDownFunc.pointerType = touchUpFunc.pointerType = 'touch';
-		mouseDownFunc.pointerType = mouseUpFunc.pointerType = 'mouse';
-
-		document.addEventListener('touchstart', touchDownFunc);
-		document.addEventListener('mousedown', mouseDownFunc);
-		document.addEventListener('touchend', touchUpFunc);
-		document.addEventListener('touchcancel', touchUpFunc);
-		document.addEventListener('mouseup', mouseUpFunc);
+		document.addEventListener('touchstart', dom.interact.pointerDown);
+		document.addEventListener('mousedown', dom.interact.pointerDown);
+		document.addEventListener('touchend', dom.interact.pointerUp);
+		document.addEventListener('touchcancel', dom.interact.pointerUp);
+		document.addEventListener('mouseup', dom.interact.pointerUp);
 
 		document.addEventListener('keydown', dom.interact.keyDown);
 		document.addEventListener('keyup', dom.interact.keyUp);
@@ -47,7 +40,9 @@ var dom = {
 
 		dom.onLoader();
 	},
-	pointerEventPolyfill: function(evt = window.event){
+	pointerEventPolyfill: function(evt){
+		if(typeof evt === 'undefined') evt = window.event;
+
 		evt.stop = function(){
 			if(evt.cancelable) evt.preventDefault();
 
@@ -56,42 +51,52 @@ var dom = {
 			if(evt.stopPropagation) evt.stopPropagation();
 		};
 
-		evt.pointerType = this.pointerType;
+		evt.pointerType = evt.type.startsWith('mouse') ? 'mouse' : 'touch';
 
-		this(evt);
+		return evt;
+	},
+	resolvePosition: function(evt){
+		return {
+			x: (evt.targetTouches) ? evt.targetTouches[0].pageX : evt.clientX,
+			y: (evt.targetTouches) ? evt.targetTouches[0].pageY : evt.clientY
+		};
 	},
 	onPointerDown: function(elem, func){
-		var touchFunc = dom.pointerEventPolyfill.bind(func);
-		var mouseFunc = dom.pointerEventPolyfill.bind(func);
+		var wrappedFunc = function(evt){
+			evt = dom.pointerEventPolyfill(evt);
 
-		touchFunc.pointerType = 'touch';
-		mouseFunc.pointerType = 'mouse';
+			if(dom.isMobile && evt.pointerType !== 'touch') return;
 
-		elem.addEventListener('touchstart', touchFunc);
-		elem.addEventListener('mousedown', mouseFunc);
+			func(evt);
+		};
+
+		elem.addEventListener('touchstart', wrappedFunc);
+		elem.addEventListener('mousedown', wrappedFunc);
 
 		elem.pointerDownOff = function(){
-			elem.removeEventListener('touchstart', touchFunc);
-			elem.removeEventListener('mousedown', mouseFunc);
+			elem.removeEventListener('touchstart', wrappedFunc);
+			elem.removeEventListener('mousedown', wrappedFunc);
 
 			delete elem.pointerDownOff;
 		};
 	},
 	onPointerUp: function(elem, func){
-		var touchFunc = dom.pointerEventPolyfill.bind(func);
-		var mouseFunc = dom.pointerEventPolyfill.bind(func);
+		var wrappedFunc = function(evt){
+			evt = dom.pointerEventPolyfill(evt);
 
-		touchFunc.pointerType = 'touch';
-		mouseFunc.pointerType = 'mouse';
+			if(dom.isMobile && evt.pointerType !== 'touch') return;
 
-		elem.addEventListener('touchend', touchFunc);
-		elem.addEventListener('touchcancel', touchFunc);
-		elem.addEventListener('mouseup', mouseFunc);
+			func(evt);
+		};
+
+		elem.addEventListener('touchend', wrappedFunc);
+		elem.addEventListener('touchcancel', wrappedFunc);
+		elem.addEventListener('mouseup', wrappedFunc);
 
 		elem.pointerUpOff = function(){
-			elem.removeEventListener('touchend', touchFunc);
-			elem.removeEventListener('touchcancel', touchFunc);
-			elem.removeEventListener('mouseup', mouseFunc);
+			elem.removeEventListener('touchend', wrappedFunc);
+			elem.removeEventListener('touchcancel', wrappedFunc);
+			elem.removeEventListener('mouseup', wrappedFunc);
 
 			delete elem.pointerUpOff;
 		};
@@ -124,11 +129,15 @@ var dom = {
 		pointerDown: function pointerDown(evt){
 			++dom.interact.activity;
 
+			evt = dom.pointerEventPolyfill(evt);
+
 			if((dom.isMobile && evt.pointerType !== 'touch') || typeof evt.target.className !== 'string') return;
 
 			dom.interact.triggerEvent('pointerDown', evt);
 		},
 		pointerUp: function pointerUp(evt){
+			evt = dom.pointerEventPolyfill(evt);
+
 			if((dom.isMobile && evt.pointerType !== 'touch') || typeof evt.target.className !== 'string') return;
 
 			dom.interact.triggerEvent('pointerUp', evt);

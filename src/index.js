@@ -57,8 +57,8 @@ var dom = {
 	},
 	resolvePosition: function(evt){
 		return {
-			x: (evt.targetTouches) ? evt.targetTouches[0].pageX : evt.clientX,
-			y: (evt.targetTouches) ? evt.targetTouches[0].pageY : evt.clientY
+			x: (evt.changedTouches) ? evt.changedTouches[0].pageX : evt.clientX,
+			y: (evt.changedTouches) ? evt.changedTouches[0].pageY : evt.clientY
 		};
 	},
 	onPointerDown: function(elem, func){
@@ -91,12 +91,12 @@ var dom = {
 
 		elem.addEventListener('touchend', wrappedFunc);
 		elem.addEventListener('touchcancel', wrappedFunc);
-		elem.addEventListener('mouseup', wrappedFunc);
+		elem.addEventListener('mouseup', wrappedFunc, true);
 
 		elem.pointerUpOff = function(){
 			elem.removeEventListener('touchend', wrappedFunc);
 			elem.removeEventListener('touchcancel', wrappedFunc);
-			elem.removeEventListener('mouseup', wrappedFunc);
+			elem.removeEventListener('mouseup', wrappedFunc, true);
 
 			delete elem.pointerUpOff;
 		};
@@ -282,6 +282,23 @@ var dom = {
 		while(elem.lastChild) elem.removeChild(elem.lastChild);
 
 		return elem;
+	},
+	classList(elem_s, add_remove, classes){
+		if(dom.isNodeList(elem_s)) elem_s = [].slice.call(elem_s);
+
+		var elemCount = elem_s.length;
+
+		if(elem_s && elemCount){
+			elem_s = elem_s.slice(0);
+
+			for(var x = 0, elem; x < elemCount; ++x){
+				elem = elem_s[x];
+
+				if(elem) elem.classList[add_remove](classes);
+			}
+		}
+
+		else if(elem_s && elem_s.parentElement) elem_s.classList[add_remove](classes);
 	},
 	remove: function(elem_s){
 		if(dom.isNodeList(elem_s)) elem_s = [].slice.call(elem_s);

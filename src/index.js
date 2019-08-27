@@ -467,14 +467,17 @@ var dom = {
 				if(!dom.mobile.detectionEnabled){
 					dom.mobile.detectionEnabled = true;
 
-					dom.interact.on('mouseDown', dom.mobile.detect);
-					dom.interact.on('touchDown', dom.mobile.detect);
+					document.addEventListener('touchstart', dom.mobile.detect);
+					document.addEventListener('mousedown', dom.mobile.detect);
+					document.addEventListener('touchend', dom.mobile.detect);
+					document.addEventListener('touchcancel', dom.mobile.detect);
+					document.addEventListener('mouseup', dom.mobile.detect);
 				}
 
 				return;
 			}
 
-			var isTouch = evt.pointerType === 'touch';
+			var isTouch = !evt.type.startsWith('mouse');
 
 			if(!isTouch && (dom.mobile.lastTouchTime && performance.now() - dom.mobile.lastTouchTime < 350)) return log(4)('[dom] Block touch to mouse emulation');
 

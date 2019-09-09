@@ -240,6 +240,9 @@ var dom = {
 	style: function(elem, styleObj){
 		for(var x = 0, keys = Object.keys(styleObj), count = keys.length; x < count; ++x) elem.style[keys[x]] = styleObj[keys[x]];
 	},
+	data: function(elem, dataObj){
+		for(var x = 0, keys = Object.keys(dataObj), count = keys.length; x < count; ++x) elem.dataset[keys[x]] = dataObj[keys[x]];
+	},
 	appendChildren: function(){
 		var elem = Array.prototype.shift.apply(arguments);
 

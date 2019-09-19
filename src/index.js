@@ -368,6 +368,11 @@ var dom = {
 			});
 		});
 	},
+	isDescendantOf: function(elem, parent){
+		var theFather = elem.parentElement === parent;
+
+		return !theFather && elem.parentElement.parentElement ? dom.isDescendantOf(elem.parentElement.parentElement, parent) : theFather;
+	},
 	getScrollbarSize: function(){
 		if(dom.scrollbarSize) return dom.scrollbarSize;
 

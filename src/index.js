@@ -304,7 +304,7 @@ var dom = {
 		else if(elem_s && elem_s.parentElement) elem_s.classList[add_remove](classes);
 	},
 	appendToLabel: function(elem, text, wrapper){
-		dom.createElem('label', { appendChild: elem, textContent: text, appendTo: wrapper });
+		dom.createElem('label', { appendChildren: [document.createTextNode(text), elem], appendTo: wrapper });
 	},
 	remove: function(elem_s){
 		if(dom.isNodeList(elem_s)) elem_s = [].slice.call(elem_s);

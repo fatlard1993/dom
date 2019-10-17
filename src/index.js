@@ -303,6 +303,13 @@ var dom = {
 
 		else if(elem_s && elem_s.parentElement) elem_s.classList[add_remove](classes);
 	},
+	getElemIndex: function(elem, index){
+		if(typeof index === 'undefined') index = 0;
+
+		if(elem.previousElementSibling) return dom.getElemIndex(elem.previousElementSibling, ++index);
+
+		return index;
+	},
 	appendToLabel: function(elem, text, wrapper){
 		dom.createElem('label', { appendChildren: [document.createTextNode(text), elem], appendTo: wrapper });
 	},

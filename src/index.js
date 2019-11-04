@@ -29,6 +29,10 @@ var dom = {
 
 		document.addEventListener('change', dom.interact.change);
 
+		window.addEventListener('scroll', function(evt){
+			if(dom.interact.touchUpWillFire) delete dom.interact.touchUpWillFire;
+		}, true);
+
 		setTimeout(function acceptKeyPresses_TO(){ dom.interact.acceptKeyPresses = true; }, 1000);
 
 		logHelp.DBG = parseInt(dom.storage.get('DBG'));
@@ -133,12 +137,14 @@ var dom = {
 
 			if((dom.isMobile && evt.pointerType !== 'touch') || typeof evt.target.className !== 'string') return;
 
+			if(evt.pointerType === 'touch') dom.interact.touchUpWillFire = true;
+
 			dom.interact.triggerEvent('pointerDown', evt);
 		},
 		pointerUp: function pointerUp(evt){
 			evt = dom.pointerEventPolyfill(evt);
 
-			if((dom.isMobile && evt.pointerType !== 'touch') || typeof evt.target.className !== 'string') return;
+			if((dom.isMobile && evt.pointerType !== 'touch') || typeof evt.target.className !== 'string' || (evt.pointerType === 'touch' && !dom.interact.touchUpWillFire)) return;
 
 			dom.interact.triggerEvent('pointerUp', evt);
 		},

@@ -292,7 +292,7 @@ var dom = {
 
 		return elem;
 	},
-	classList(elem_s, add_remove, classes){
+	classList: function(elem_s, add_remove, classes){
 		if(dom.isNodeList(elem_s)) elem_s = [].slice.call(elem_s);
 
 		var elemCount = elem_s.length;

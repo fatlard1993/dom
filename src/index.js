@@ -71,7 +71,7 @@ var dom = {
 
 			if(dom.isMobile && evt.pointerType !== 'touch') return;
 
-			func(evt);
+			func.call(elem, evt);
 		};
 
 		elem.addEventListener('touchstart', wrappedFunc);
@@ -90,7 +90,7 @@ var dom = {
 
 			if(dom.isMobile && evt.pointerType !== 'touch') return;
 
-			func(evt);
+			func.call(elem, evt);
 		};
 
 		elem.addEventListener('touchend', wrappedFunc);
@@ -664,21 +664,27 @@ var dom = {
 			(window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || function(cb) { return setTimeout(cb, 16); })(dom.animation.runner);
 		}
 	},
-	maintenance: {
+	maintenance: { // todo add a way to remove maintenance functions
 		functions: [],
-		init: function(initialMaintenance){
-			if(initialMaintenance) dom.maintenance.functions = dom.maintenance.functions.concat(initialMaintenance);
+		init: function(additionalMaintenance){
+			if(dom.maintenance.initialized) return dom.maintenance.add(additionalMaintenance);
 
-			dom.maintenance.runner = util.run.bind(null, dom.maintenance.functions);
+			dom.maintenance.initialized = true;
 
 			window.addEventListener('resize', function windowResize(){
 				if(dom.maintenance.resizeTO){
 					clearTimeout(dom.maintenance.resizeTO);
-					dom.maintenance.resizeTO = null;
+
+					delete dom.maintenance.resizeTO;
 				}
 
 				dom.maintenance.resizeTO = setTimeout(dom.maintenance.run, 300);
 			});
+
+			return dom.maintenance.add(additionalMaintenance);
+		},
+		add: function(additionalMaintenance){
+			if(additionalMaintenance) dom.maintenance.functions = dom.maintenance.functions.concat(additionalMaintenance);
 
 			dom.maintenance.run();
 		},
@@ -687,7 +693,7 @@ var dom = {
 				dom.availableHeight = document.body.clientHeight;
 				dom.availableWidth = document.body.clientWidth;
 
-				dom.animation.add('write', dom.maintenance.runner);
+				dom.animation.add('write', util.run.bind(null, dom.maintenance.functions));
 			});
 		}
 	}

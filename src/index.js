@@ -74,6 +74,8 @@ var dom = {
 			func.call(elem, evt);
 		};
 
+		elem.pointerDownFunction = wrappedFunc;
+
 		elem.addEventListener('touchstart', wrappedFunc);
 		elem.addEventListener('mousedown', wrappedFunc);
 
@@ -92,6 +94,8 @@ var dom = {
 
 			func.call(elem, evt);
 		};
+
+		elem.pointerUpFunction = wrappedFunc;
 
 		elem.addEventListener('touchend', wrappedFunc);
 		elem.addEventListener('touchcancel', wrappedFunc);

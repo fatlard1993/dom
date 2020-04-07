@@ -488,6 +488,13 @@ var dom = {
 
 		return orientation;
 	},
+	downloadURL: function downloadFile(url, fileName){
+		const a = dom.createElem('a', { href: url, download: fileName, appendTo: document.body, style: { display: 'none' } });
+
+		a.click();
+
+		dom.remove(a);
+	},
 	isMobile: false,
 	mobile: {
 		detect: function(evt){

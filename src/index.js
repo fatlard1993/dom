@@ -497,7 +497,7 @@ var dom = {
 	},
 	fadeOut: function(startDate, rate = 1e10, currentFakeDate){
 		startDate = new Date(startDate).getTime();
-		var currentDate =  new Date(typeof currentFakeDate !== 'undefined' && currentFakeDate).getTime();
+		var currentDate = typeof currentFakeDate !== 'undefined' ? new Date(currentFakeDate).getTime() : new Date().getTime();
 
 		document.body.style.opacity = Math.max(0, 1 - ((currentDate - startDate) / rate));
 	},

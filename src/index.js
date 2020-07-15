@@ -495,6 +495,12 @@ var dom = {
 
 		dom.remove(a);
 	},
+	fadeOut: function(startDate, rate = 1e10, currentFakeDate){
+		startDate = new Date(startDate).getTime();
+		var currentDate =  new Date(typeof currentFakeDate !== 'undefined' && currentFakeDate).getTime();
+
+		document.body.style.opacity = Math.max(0, 1 - ((currentDate - startDate) / rate));
+	},
 	isMobile: false,
 	mobile: {
 		detect: function(evt){

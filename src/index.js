@@ -433,9 +433,11 @@ var dom = {
 		else if(elem.validation){
 			if(elem.validation instanceof Array){
 				for(x = 0, count = elem.validation.length; x < count; ++x){
-					if(valid !== 'invalid') valid = dom.checkValid(elem.value, elem.validation[x]);
+					if(valid !== 'invalid'){
+						valid = dom.checkValid(elem.value, elem.validation[x]);
 
-					if(elem.validationWarning[x] && valid === 'invalid') validationWarning += (validationWarning.length ? '\n' : '') + elem.validationWarning[x];
+						if(elem.validationWarning[x] && valid === 'invalid') validationWarning += (validationWarning.length ? '\n' : '') + elem.validationWarning[x];
+					}
 				}
 			}
 

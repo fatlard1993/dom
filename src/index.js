@@ -109,6 +109,28 @@ var dom = {
 			delete elem.pointerUpOff;
 		};
 	},
+	onKeyDown: function(elem, func){
+		elem.keyDownFunction = func;
+
+		elem.addEventListener('keydown', func);
+
+		elem.keyDownOff = function(){
+			elem.removeEventListener('keydown', func);
+
+			delete elem.keyDownOff;
+		};
+	},
+	onKeyUp: function(elem, func){
+		elem.keyUpFunction = func;
+
+		elem.addEventListener('keyup', func);
+
+		elem.keyUpOff = function(){
+			elem.removeEventListener('keyup', func);
+
+			delete elem.keyUpOff;
+		};
+	},
 	interact: {
 		activity: 0,
 		pressedKeys: {},

@@ -258,7 +258,11 @@ var dom = {
 					else this[settingName](elem, settingValue);
 				}
 
-				else if(typeof elem[settingName] === 'function') elem[settingName](settingValue);
+				else if(typeof elem[settingName] === 'function'){
+					if(Array.isArray(settingValue)) elem[settingName].apply(elem, settingValue);
+
+					else elem[settingName](settingValue);
+				}
 
 				else elem[settingName] = settingValue;
 			}

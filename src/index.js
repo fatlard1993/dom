@@ -240,6 +240,9 @@ var dom = {
 			return dom.localStorage ? dom.localStorage.removeItem(prop) : dom.cookie.delete(prop);
 		}
 	},
+	createFragment: function(){
+		return document.createDocumentFragment();
+	},
 	createElem: function(node, settingsObj){
 		var elem = document.createElement(node);
 

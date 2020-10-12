@@ -113,16 +113,14 @@ var dom = {
 		var wrappedFunc = function(evt){
 			evt = dom.pointerEventPolyfill(evt);
 
-			elem.pointerUpOff();
+			if(elem.pointerUpOff) elem.pointerUpOff();
 
-			if(evt.target !== elem) return;
-
-			if(dom.isMobile && evt.pointerType !== 'touch') return;
+			if(evt.target !== elem || dom.isMobile && evt.pointerType !== 'touch') return;
 
 			func.call(elem, evt);
 		};
 
-		elem.pointerPressFunction = wrappedFunc;
+		elem.pointerPressFunction = func.bind(elem);
 
 		elem.pointerDownOff = function(){
 			elem.removeEventListener('touchstart', pointerDown);
@@ -131,24 +129,71 @@ var dom = {
 			delete elem.pointerDownOff;
 		};
 
-		elem.pointerUpOff = function(){
-			elem.removeEventListener('touchend', wrappedFunc);
-			elem.removeEventListener('touchcancel', wrappedFunc);
-			elem.removeEventListener('mouseup', wrappedFunc, true);
+		var pointerDown = function(evt){
+			evt = dom.pointerEventPolyfill(evt);
 
-			delete elem.pointerUpOff;
+			if(evt.target !== elem || dom.isMobile && evt.pointerType !== 'touch') return;
+
+			document.addEventListener('touchend', wrappedFunc);
+			document.addEventListener('touchcancel', wrappedFunc);
+			document.addEventListener('mouseup', wrappedFunc, true);
+
+			elem.pointerUpOff = function(){
+				document.removeEventListener('touchend', wrappedFunc);
+				document.removeEventListener('touchcancel', wrappedFunc);
+				document.removeEventListener('mouseup', wrappedFunc, true);
+
+				delete elem.pointerUpOff;
+			};
+		};
+
+		elem.addEventListener('touchstart', pointerDown);
+		elem.addEventListener('mousedown', pointerDown);
+	},
+	onPointerPressAndHold: function(elem, func){
+		elem.dataset.pressAndHoldTime = elem.dataset.pressAndHoldTime || 900;
+
+		elem.pointerPressAndHoldFunction = func.bind(elem);
+
+		elem.pointerDownOff = function(){
+			elem.removeEventListener('touchstart', pointerDown);
+			elem.removeEventListener('mousedown', pointerDown);
+
+			delete elem.pointerDownOff;
+		};
+
+		var pointerUp = function(evt){
+			elem.pointerUpOff();
 		};
 
 		var pointerDown = function(evt){
 			evt = dom.pointerEventPolyfill(evt);
 
-			if(evt.target !== elem) return;
+			if(evt.target !== elem || dom.isMobile && evt.pointerType !== 'touch') return;
 
-			if(dom.isMobile && evt.pointerType !== 'touch') return;
+			elem.classList.add('pointerHold');
 
-			elem.addEventListener('touchend', wrappedFunc);
-			elem.addEventListener('touchcancel', wrappedFunc);
-			elem.addEventListener('mouseup', wrappedFunc, true);
+			elem.holdTimeout = setTimeout(() => {
+				func.call(elem, evt);
+			}, parseInt(elem.dataset.pressAndHoldTime));
+
+			document.addEventListener('touchend', pointerUp);
+			document.addEventListener('touchcancel', pointerUp);
+			elem.addEventListener('mouseleave', pointerUp);
+			document.addEventListener('mouseup', pointerUp, true);
+
+			elem.pointerUpOff = function(){
+				clearTimeout(elem.holdTimeout);
+
+				elem.classList.remove('pointerHold');
+
+				document.removeEventListener('touchend', pointerUp);
+				document.removeEventListener('touchcancel', pointerUp);
+				elem.removeEventListener('mouseleave', pointerUp);
+				document.removeEventListener('mouseup', pointerUp, true);
+
+				delete elem.pointerUpOff;
+			};
 		};
 
 		elem.addEventListener('touchstart', pointerDown);

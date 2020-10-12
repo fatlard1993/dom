@@ -109,6 +109,51 @@ var dom = {
 			delete elem.pointerUpOff;
 		};
 	},
+	onPointerPress: function(elem, func){
+		var wrappedFunc = function(evt){
+			evt = dom.pointerEventPolyfill(evt);
+
+			elem.pointerUpOff();
+
+			if(evt.target !== elem) return;
+
+			if(dom.isMobile && evt.pointerType !== 'touch') return;
+
+			func.call(elem, evt);
+		};
+
+		elem.pointerPressFunction = wrappedFunc;
+
+		elem.pointerDownOff = function(){
+			elem.removeEventListener('touchstart', pointerDown);
+			elem.removeEventListener('mousedown', pointerDown);
+
+			delete elem.pointerDownOff;
+		};
+
+		elem.pointerUpOff = function(){
+			elem.removeEventListener('touchend', wrappedFunc);
+			elem.removeEventListener('touchcancel', wrappedFunc);
+			elem.removeEventListener('mouseup', wrappedFunc, true);
+
+			delete elem.pointerUpOff;
+		};
+
+		var pointerDown = function(evt){
+			evt = dom.pointerEventPolyfill(evt);
+
+			if(evt.target !== elem) return;
+
+			if(dom.isMobile && evt.pointerType !== 'touch') return;
+
+			elem.addEventListener('touchend', wrappedFunc);
+			elem.addEventListener('touchcancel', wrappedFunc);
+			elem.addEventListener('mouseup', wrappedFunc, true);
+		};
+
+		elem.addEventListener('touchstart', pointerDown);
+		elem.addEventListener('mousedown', pointerDown);
+	},
 	onKeyDown: function(elem, func){
 		elem.keyDownFunction = func;
 

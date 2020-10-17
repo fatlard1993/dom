@@ -1,10 +1,10 @@
-// includes js-util log
-// babel
-/* global util log logHelp */
+import Log from 'log';
+import util from 'js-util';
 
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
-var dom = {
+const dom = {
+	log: new Log({ tag: 'dom' }),
 	isIOS: navigator.platform && /iP(hone|ad)/.test(navigator.platform),
 	isSafari: navigator.vendor === 'Apple Computer, Inc.' && !navigator.userAgent.match('CriOS'),
 	onLoad: function(func){
@@ -34,8 +34,6 @@ var dom = {
 		}, true);
 
 		setTimeout(function acceptKeyPresses_TO(){ dom.interact.acceptKeyPresses = true; }, 1000);
-
-		logHelp.DBG = parseInt(dom.storage.get('DBG'));
 	},
 	onLoaded: function(){
 		if(dom.loaded) return;
@@ -316,7 +314,7 @@ var dom = {
 		}
 
 		catch(err){
-			log.error()('[dom]', err);
+			dom.log.error()('[dom]', err);
 		}
 	}()),
 	storage: {
@@ -644,7 +642,7 @@ var dom = {
 
 			var isTouch = !evt.type.startsWith('mouse');
 
-			if(!isTouch && (dom.mobile.lastTouchTime && performance.now() - dom.mobile.lastTouchTime < 350)) return log(4)('[dom] Block touch to mouse emulation');
+			if(!isTouch && (dom.mobile.lastTouchTime && performance.now() - dom.mobile.lastTouchTime < 350)) return dom.log(4)('[dom] Block touch to mouse emulation');
 
 			else if(isTouch) dom.mobile.lastTouchTime = performance.now();
 
@@ -791,7 +789,7 @@ var dom = {
 			}
 
 			catch(err){
-				log.error('[dom] Animation runner encountered an error!', err);
+				dom.log.error('[dom] Animation runner encountered an error!', err);
 			}
 
 			dom.animation.scheduled = false;
@@ -839,3 +837,5 @@ var dom = {
 		}
 	}
 };
+
+if(typeof module === 'object') module.exports = dom;

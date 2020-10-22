@@ -1,14 +1,28 @@
-.hideable {
+@define-mixin clearFix {
+	content: "";
+	display: block;
+	clear: both;
+}
+
+@define-mixin hideable {
 	transition: opacity .3s;
 	will-change: opacity;
+}
+
+@define-mixin discardable {
+	transition: opacity .3s;
+	will-change: opacity;
+}
+
+.hideable {
+	@mixin hideable;
 }
 .hide {
 	opacity: 0 !important;
 }
 
 .discardable {
-	transition: transform .4s, opacity .3s;
-	will-change: transform, opacity;
+	@mixin discardable;
 }
 .discard {
 	opacity: 0 !important;
@@ -22,16 +36,14 @@
 	}
 }
 
-	.clear {
-		content: "";
-		display: block;
-		clear: both;
-	}
+.clear {
+	@mixin clearFix;
+}
 
-	.disappear {
-		display: none !important;
-		will-change: auto !important;
-	}
+.disappear {
+	display: none !important;
+	will-change: auto !important;
+}
 
 div#scrollbarDiv {
 	position: absolute;

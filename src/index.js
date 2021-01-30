@@ -33,7 +33,7 @@ const dom = {
 			if(dom.interact.touchUpWillFire) delete dom.interact.touchUpWillFire;
 		}, true);
 
-		setTimeout(function acceptKeyPresses_TO(){ dom.interact.acceptKeyPresses = true; }, 1000);
+		setTimeout(function acceptKeyPresses_TO(){ dom.interact.acceptKeyPresses = true; }, 200);
 	},
 	onLoaded: function(){
 		if(dom.loaded) return;

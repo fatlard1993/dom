@@ -29,7 +29,7 @@ const dom = {
 
 		document.addEventListener('change', dom.interact.change);
 
-		window.addEventListener('scroll', function(evt){
+		window.addEventListener('scroll', function(){
 			if(dom.interact.touchUpWillFire) delete dom.interact.touchUpWillFire;
 		}, true);
 
@@ -160,7 +160,7 @@ const dom = {
 			delete elem.pointerDownOff;
 		};
 
-		var pointerUp = function(evt){
+		var pointerUp = function(){
 			elem.pointerUpOff();
 		};
 

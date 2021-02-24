@@ -219,6 +219,9 @@ const dom = {
 			delete elem.keyUpOff;
 		};
 	},
+	onChange: function(elem, func){
+		elem.addEventListener('change', func);
+	},
 	interact: {
 		activity: 0,
 		pressedKeys: {},

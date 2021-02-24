@@ -376,12 +376,15 @@ const dom = {
 	attr: function(elem, attrObj){
 		for(var x = 0, keys = Object.keys(attrObj), count = keys.length; x < count; ++x) elem.setAttribute([keys[x]], attrObj[keys[x]]);
 	},
-	appendChildren: function(){
-		var elem = Array.prototype.shift.apply(arguments);
+	options: function(elem, options){
+		options = options && options instanceof Array ? options : Array.from(arguments).splice(1);
 
-		for(var x = 0; x < arguments.length; ++x){
-			elem.appendChild(arguments[x]);
-		}
+		dom.appendChildren(elem, options.map((option) => { return dom.createElem('option', { textContent: option }); }));
+	},
+	appendChildren: function(elem, children){
+		children = children && children instanceof Array ? children : Array.from(arguments).splice(1);
+
+		for(var x = 0; x < children.length; ++x) elem.appendChild(children[x]);
 	},
 	appendTo: function(elem, parentElem){
 		parentElem.appendChild(elem);

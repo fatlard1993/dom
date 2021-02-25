@@ -220,7 +220,11 @@ const dom = {
 		};
 	},
 	onChange: function(elem, func){
-		elem.addEventListener('change', func);
+		elem.addEventListener('change', (evt) => {
+			evt.value = elem.value;
+
+			func(evt);
+		});
 	},
 	interact: {
 		activity: 0,

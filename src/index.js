@@ -688,37 +688,58 @@ const dom = {
 			},
 		},
 		query: {
-			parse: function(){
-				var queryObj = {};
+			write({ query, fetch }) {
+				query = query && !query.startsWith('?') ? `?${query}` : query;
+
+				if (fetch) location.search = query;
+				else history.replaceState(null, query, query);
+			},
+			fetch() {
+				dom.location.query.write({ query: location.search, fetch: true });
+			},
+			stringify(obj) {
+				return Object.keys(obj).reduce((arr, key) => { arr.push(`${key}=${encodeURIComponent(obj[key])}`); return arr; }, []).join('&');
+			},
+			parse() {
+				const queryObj = {};
 
 				if(!location.search.length) return queryObj;
 
-				var queryString = location.search.slice(1), urlVariables = queryString.split('&');
+				const queryString = location.search.slice(1);
+				const urlVariables = queryString.split('&');
 
-				for(var x = 0; x < urlVariables.length; ++x){
-					var splitVar = urlVariables[x].split('='), key = splitVar[0], value = splitVar[1];
+				for(let x = 0; x < urlVariables.length; ++x){
+					const [key, value] = urlVariables[x].split('=');
 
 					queryObj[decodeURIComponent(key)] = decodeURIComponent(value);
 				}
 
 				return queryObj;
 			},
-			get: function(param){
+			get(param) {
 				return dom.location.query.parse()[param];
 			},
-			set: function(){
-				var obj = {};
+			set() {
+				let obj = {};
 
-				if(typeof arguments[0] === 'object') obj = arguments[0];
+				if (typeof arguments[0] === 'object') obj = arguments[0];
 
-				else obj[arguments[0]] = arguments[1];
+				else {
+					obj[arguments[0]] = arguments[1];
+					obj = Object.assign(dom.location.query.parse(), obj);
+				}
 
-				obj = Object.assign(dom.location.query.parse(), obj);
+				dom.location.query.write({ query: dom.location.query.stringify(obj) });
+			},
+			delete(param) {
+				if (!param) return location.query.write({ query: '' });
 
-				var query = '?'+ Object.keys(obj).reduce(function(a, k){ a.push(k +'='+ encodeURIComponent(obj[k])); return a; }, []).join('&');
+				const obj = dom.location.query.parse();
 
-				history.replaceState(null, query, query);
-			}
+				delete obj[param];
+
+				dom.location.query.write({ query: dom.location.query.stringify(obj) });
+			},
 		}
 	},
 	cookie: {

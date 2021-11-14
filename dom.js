@@ -653,7 +653,7 @@ const dom = {
 		for (let x = 0; x < children.length; ++x) elem.appendChild(children[x]);
 	},
 	appendTo: (elem, parentElem) => {
-		parentElem.appendChild(elem);
+		if (elem && parentElem?.appendChild) parentElem.appendChild(elem);
 	},
 	prependTo: (elem, parentElem) => {
 		if (parentElem.firstChild) parentElem.insertBefore(elem, parentElem.firstChild);

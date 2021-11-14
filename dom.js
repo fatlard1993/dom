@@ -648,7 +648,9 @@ const dom = {
 		);
 	},
 	appendChildren: (elem, children, ...args) => {
-		children = children && children instanceof Array ? children : [children, ...args];
+		if (!elem || !children) return;
+
+		children = Array.isArray(children) ? children : [children, ...args];
 
 		for (let x = 0; x < children.length; ++x) elem.appendChild(children[x]);
 	},

@@ -1,27 +1,38 @@
 {
 	"name": "dom",
 	"version": "2.23.0",
-	"description": "A js library for working with the dom",
-	"main": "src/index.js",
-	"mainCss": "src/index.css",
+	"main": "dom.js",
+	"description": "A js/css ESM library for working with the dom",
+	"author": "justfatlard",
+	"license": "ISC",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"lint": "eslint",
+		"lint:fix": "eslint --fix --ext .js .",
+		"pretty": "prettier --write ."
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/fatlard1993/dom.git"
 	},
-	"author": "fatlard1993",
-	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/fatlard1993/dom/issues"
 	},
 	"homepage": "https://github.com/fatlard1993/dom#readme",
-	"devDependencies": {
-		"eslint": "^7.19.0"
-	},
 	"dependencies": {
 		"js-util": "github:fatlard1993/js-util#2.x.x",
-		"log": "github:fatlard1993/log#3.x.x"
+		"log": "github:fatlard1993/log"
+	},
+	"devDependencies": {
+		"eslint": "^8.2.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-cypress": "^2.12.1",
+		"eslint-plugin-prettier": "^4.0.0",
+		"husky": "^7.0.4",
+		"lint-staged": "^12.0.1",
+		"prettier": "2.4.1"
+	},
+	"lint-staged": {
+		"**/*": "prettier --write --ignore-unknown"
 	}
 }

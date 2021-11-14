@@ -1,6 +1,6 @@
 {
 	"name": "dom",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"main": "dom.js",
 	"description": "A js/css ESM library for working with the dom",
 	"author": "justfatlard",

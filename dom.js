@@ -1,7 +1,7 @@
 import './dom.css';
 
 import { Log } from 'log';
-import util from 'js-util';
+import { jsUtil } from 'js-util';
 
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
@@ -1066,11 +1066,11 @@ const dom = {
 			try {
 				if (dom.animation.read_tasks.length) {
 					//Log()('animation', 'running reads', dom.animation.read_tasks.length);
-					util.run(dom.animation.read_tasks, 1);
+					jsUtil.run(dom.animation.read_tasks, 1);
 				}
 				if (dom.animation.write_tasks.length) {
 					//Log()('animation', 'running writes', dom.animation.write_tasks.length);
-					util.run(dom.animation.write_tasks, 1);
+					jsUtil.run(dom.animation.write_tasks, 1);
 				}
 			} catch (err) {
 				dom.log.error('[dom] Animation runner encountered an error!', err);
@@ -1117,7 +1117,7 @@ const dom = {
 				dom.availableHeight = document.body.clientHeight;
 				dom.availableWidth = document.body.clientWidth;
 
-				dom.animation.add('write', util.run.bind(null, dom.maintenance.functions));
+				dom.animation.add('write', jsUtil.run.bind(null, dom.maintenance.functions));
 			});
 		},
 	},

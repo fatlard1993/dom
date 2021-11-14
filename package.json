@@ -20,7 +20,7 @@
 	},
 	"homepage": "https://github.com/fatlard1993/dom#readme",
 	"dependencies": {
-		"js-util": "github:fatlard1993/js-util#2.x.x",
+		"js-util": "github:fatlard1993/js-util",
 		"log": "github:fatlard1993/log"
 	},
 	"devDependencies": {

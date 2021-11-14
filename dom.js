@@ -613,9 +613,9 @@ const dom = {
 				settingName = settingsNames[x];
 				settingValue = settingsObj[settingName];
 
-				if (typeof this[settingName] === 'function') {
-					if (Array.isArray(settingValue)) this[settingName].apply(this, [elem].concat(settingValue));
-					else this[settingName](elem, settingValue);
+				if (typeof dom[settingName] === 'function') {
+					if (Array.isArray(settingValue)) dom[settingName].apply(dom, [elem].concat(settingValue));
+					else dom[settingName](elem, settingValue);
 				} else if (typeof elem[settingName] === 'function') {
 					if (Array.isArray(settingValue)) elem[settingName].apply(elem, settingValue);
 					else elem[settingName](settingValue);
